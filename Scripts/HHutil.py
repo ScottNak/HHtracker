@@ -8,7 +8,7 @@ import json
 import sys
 from enum import Enum
 
-HOME_DIR = "C:/Users/ScottNak/Desktop/HH/"
+HOME_DIR = "C:/Users/ScottNak/Documents/HHtracker/"
 HH_LINK = 'http://www.halosheaven.com/pregame-thread'
 HH_GET_LINK = "http://www.sbnrollcall.com/XHR/fetchBlog.php?action=fetchBlog&urls[]="
 LINKS = re.compile("<a.* href=\"(.*)\">Game\s?(\d+).*</a>")
@@ -77,7 +77,7 @@ def getCommentUsers(num):
 		print(" >>>> DONE >>>> ")
 		return users
 	except:
-		print( "Uh oh... " + sys.exc_info()[0])
+		print( "Uh oh... " + sys.exc_info())
 
 def getGameInfo(WB, SH):
 	returnMe = []
@@ -101,9 +101,9 @@ def getGameInfo(WB, SH):
 			print("  " + str(i.value) + ": " + str(i.name))
 		gameType = GameType(int(input("Use This: ")))
 
-	return getAnswers(gameType, returnMe)
+	return (gameType, returnMe)
 
-def getAnswers(GT, Qs):
+def getAnswerList(GT, Qs):
 	ans = []
 	if GT == GameType.INNP:
 		ans = input("Innings with Runs: ")
@@ -112,11 +112,12 @@ def getAnswers(GT, Qs):
 		ans = []
 	else:
 		for qq in Qs:
-			reply = input("Answer to " + qq)
+			reply = input("Answer to " + qq + ": ")
 			if is_number(reply):
 				ans.append(int(reply))
 			else:
 				ans.append(reply)
+	return ans
 
 def getEntries(WB, SH):
 	returnMe = {}

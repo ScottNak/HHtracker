@@ -1,8 +1,5 @@
 from .HHutil import GameType
 
-def hello():
-	print("XXXXXXXXXXXX")
-
 def justMatch(userPicks, answers):
 	score = 0
 	for i in range(0, len(userPicks)):
