@@ -2,8 +2,6 @@ import Scripts.HHutil as HH
 import Scripts.HHscorer as HHSC
 import Scripts.HHwriter as HHWR
 
-doPreSiftingList = [HH.GameType.DECL]
-
 gameNo = int(input("Game #: "))
 thisGameLimit = HH.getThisGameTimeLimit(gameNo)
 thisGameWB, thisGameSH = HH.getThisGamesWB(gameNo)
@@ -17,17 +15,18 @@ goodEntries = {k:v for (k, v) in verifiedEntries.items() if (v['time'] <= thisGa
 lateEntries = [k for (k, v) in verifiedEntries.items() if (v['time'] > thisGameLimit)]
 
 (gameType, questions) = HH.getGameInfo(thisGameWB, thisGameSH)
-answers = HH.getAnswerList(gameType, questions)
-
-if gameType in doPreSiftingList:
-	pass
+presiftInfo = None
+if gameType is HH.GameType.DECL:
+	presiftInfo = HH.presiftDECL(goodEntries)
+print(presiftInfo)
+answers = HH.getAnswerList(gameType, questions, presiftInfo)
 
 markedEntries = HHSC.scoreGame(gameType, goodEntries, answers)
 sortedEntries = []
 for user in sorted(markedEntries.items(), key=lambda k_v: k_v[1]['score'], reverse=True):
 	sortedEntries.append(user)
 
-print("Game Type: " + str(gameType.value))
+print("Game Type: " + str(gameType.name))
 print("Answers: " + str(answers))
 
 print("All  Entries: ", len(allEntries.keys()))

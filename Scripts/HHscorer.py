@@ -1,19 +1,24 @@
 from .HHutil import GameType
+from .HHutil import is_number
 
 def justMatch(userPicks, answers):
 	score = 0
 	for i in range(0, len(userPicks)):
-		if int(userPicks[i]) == int(answers[i]):
+		userAns = int(userPicks[i]) if is_number(userPicks[i]) else userPicks[i]
+		answer  = int(answers[i]) if is_number(answers[i]) else answers[i]
+
+		if userAns == answer:
 			score += 1
 	return score
 
 def innpickLogic(userPicks, answers):
 	hits = 0
 	hitsToScore = {0:2, 1:0, 2:0, 3:0, 4:0, 5:1, 6:1, 7:2, 8:3, 9:4}
+
 	for i in range(1, 10):
 		if (i in userPicks) == (i in answers):
 			hits += 1
-	return hitsToScore[hits]
+	return (hitsToScore[hits], hits)
 
 def overUnder(userPicks, answers):
 	score = 0
@@ -39,11 +44,14 @@ def declScore(userPicks, answers):
 def scoreGame(gameType, entries, answers):
 	for user in entries:
 		score = 0
+
 		userPicks = entries[user]['selections']
 		if gameType in [GameType.RHP, GameType.ABOX]:
 			score = justMatch(userPicks, answers)
-		elif gameType is GameType.INNP:
-			score = innpickLogic(userPicks, answers)
+		elif gameType is GameType.INNP:			 
+			if not is_number(userPicks[0]):
+				entries[user]['selections'] = [int(x) for x in userPicks[0].split(", ")]
+			score = innpickLogic(entries[user]['selections'], answers)
 		elif gameType is GameType.OVUN:
 			score = overUnder(userPicks, answers)
 		elif gameType is GameType.DECL:

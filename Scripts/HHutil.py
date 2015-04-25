@@ -52,7 +52,7 @@ def getThisGameTimeLimit(num):
 	date = xlrd.xldate.xldate_as_datetime(schedSH.cell_value(num, 0), schedWB.datemode)
 	match = schedSH.cell_value(num, 4).split(" at ")
 	print(MLB_LINK.format(date.month, date.day, CONVERT_TO_URL[match[0]], CONVERT_TO_URL[match[1]]))
-	webbrowser.get(CHROME_DIR).open(MLB_LINK.format(date.month, date.day, CONVERT_TO_URL[match[0]], CONVERT_TO_URL[match[1]]))
+	webbrowser.get(CHROME_DIR).open(MLB_LINK.format(date.month, date.day, CONVERT_TO_URL[match[0]], CONVERT_TO_URL[match[1]]), new=1)
 	return confirmTimeOK(xlrd.xldate.xldate_as_datetime(schedSH.cell_value(num, 0), schedWB.datemode))
 
 def confirmTimeOK(limit):
@@ -115,20 +115,29 @@ def getGameInfo(WB, SH):
 
 	return (gameType, returnMe)
 
-def getAnswerList(GT, Qs):
+def getAnswerList(GT, Qs, presiftInfo):
+	isOK = False
 	ans = []
-	if GT == GameType.INNP:
-		ans = input("Innings with Runs: ")
-		ans = [int(x) for x in ans.split(" ")]
-	elif GT == GameType.DECL:
+	while not isOK:
 		ans = []
-	else:
-		for qq in Qs:
-			reply = input("Answer to " + qq + ": ")
-			if is_number(reply):
-				ans.append(int(reply))
-			else:
-				ans.append(reply)
+		if GT == GameType.INNP:
+			ans = input("Innings with Runs: ")
+			ans = [int(x) for x in ans.split(" ")]
+		elif GT == GameType.DECL:
+			ans = {}
+			for key in presiftInfo:
+				ans[key] = {}
+				for feat in presiftInfo[key]:
+					val = int(input(key + ", " + feat + " = "))
+					ans[key][feat] = val
+		else:
+			for qq in Qs:
+				reply = input("Answer to " + qq + ": ")
+				if is_number(reply):
+					ans.append(int(reply))
+				else:
+					ans.append(reply)
+		isOK = input("OK? ") != "n"
 	return ans
 
 def getEntries(WB, SH):
@@ -145,20 +154,13 @@ def getEntries(WB, SH):
 		returnMe[thisUser] = {'time': thisEntryTime, 'selections': thisSelections}
 	return returnMe
 
-def getAnswers(gameType, returnMe):
-	isOk = False
-	while not isOk:
-		answers = []
-		if gameType in [GameType.RHP, GameType.ABOX, GameType.OVUN]:
-			for i in returnMe:
-				answers.append(input("Answer to: [" + i + "]: "))
-			for i in range(0, len(answers)):
-				print (returnMe[i] + ": " + answers[i])
-		elif gameType is GameType.INNP:
-			answers = input("Innings with Runs: ").split(" ")
-			print ("Answer: " + str(answers))
-		elif gameType is GameType.DECL:
-			pass
+def presiftDECL(userPicks):
+	shortcut = {}
+	for user in userPicks:
+		selection = userPicks[user]['selections']
+		checks = shortcut.get(selection[0], [])
+		if selection[3] not in checks:
+			checks.append(selection[3])
+		shortcut[selection[0]] = checks
 
-		isOk = input("OK? ") != "n"
-	return (gameType, answers)
+	return shortcut
