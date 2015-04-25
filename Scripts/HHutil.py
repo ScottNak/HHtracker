@@ -6,12 +6,20 @@ import re
 import urllib.request
 import json
 import sys
+import webbrowser
 from enum import Enum
 
 HOME_DIR = "C:/Users/ScottNak/Documents/HHtracker/"
 HH_LINK = 'http://www.halosheaven.com/pregame-thread'
 HH_GET_LINK = "http://www.sbnrollcall.com/XHR/fetchBlog.php?action=fetchBlog&urls[]="
+MLB_LINK = "mlb.mlb.com/mlb/gameday/index.jsp?gid=2015_{:02}_{:02}_{}_{}_1&mode=box"
+CHROME_DIR = "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s"
 LINKS = re.compile("<a.* href=\"(.*)\">Game\s?(\d+).*</a>")
+
+CONVERT_TO_URL = { 'Angels': 'anamlb','Royals': 'kcamlb','Athletics': 'oakmlb','Rangers': 'texmlb','Mariners': 'seamlb',
+'Astros': 'houmlb','Rockies': 'colmlb','Padres': 'sdnmlb','Tigers': 'detmlb','Rays': 'tbamlb','D-backs': 'arimlb',
+'Yankees': 'nyamlb','Red Sox': 'bosmlb','Twins': 'minmlb','Indians': 'clemlb','Orioles': 'balmlb','White Sox': 'chamlb',
+'Blue Jays': 'tormlb','Dodgers': 'lanmlb','Giants': 'sfnmlb'}
 
 class GameType(Enum):
 	RHP  = 1
@@ -41,6 +49,10 @@ def getThisGamesWB(num):
 def getThisGameTimeLimit(num):
 	schedWB = xlrd.open_workbook(os.path.abspath(HOME_DIR+'schedule.xlsx'))
 	schedSH = schedWB.sheet_by_index(0)
+	date = xlrd.xldate.xldate_as_datetime(schedSH.cell_value(num, 0), schedWB.datemode)
+	match = schedSH.cell_value(num, 4).split(" at ")
+	print(MLB_LINK.format(date.month, date.day, CONVERT_TO_URL[match[0]], CONVERT_TO_URL[match[1]]))
+	webbrowser.get(CHROME_DIR).open(MLB_LINK.format(date.month, date.day, CONVERT_TO_URL[match[0]], CONVERT_TO_URL[match[1]]))
 	return confirmTimeOK(xlrd.xldate.xldate_as_datetime(schedSH.cell_value(num, 0), schedWB.datemode))
 
 def confirmTimeOK(limit):
