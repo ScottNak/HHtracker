@@ -1,3 +1,4 @@
+from .HHutil import HOME_DIR
 import xlwt
 import os
 
@@ -66,5 +67,5 @@ def writeResults(num, xlSet, GT, Qs, As, userResults, ngList, noCommList):
 		num = "0" + str(num)
 	else:
 		num = str(num)
-	wb.save("Game" + num + "out.xls")
-	os.startfile("Game" + num + "out.xls")
+	wb.save("./Results/Game" + num + "out.xls")
+	os.startfile(HOME_DIR + "/Results/Game" + num + "out.xls")

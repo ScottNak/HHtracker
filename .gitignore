@@ -1,6 +1,5 @@
+*.xls
 *.xlsx
 *.pyc
 Scripts/__init__.py
 Scripts/runGame.py
-*.xls
-*.xls
