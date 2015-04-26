@@ -145,6 +145,7 @@ def getEntries(WB, SH):
 	for r in range(1, SH.nrows):
 		thisEntryTime = datetime.datetime(*xlrd.xldate_as_tuple(SH.cell_value(r,0), WB.datemode)) 
 		thisUser = str(int(SH.cell_value(r, 1))) if SH.cell_type(r,1) == 2 else SH.cell_value(r, 1)
+		thisUser = thisUser.strip()
 		thisSelections = []
 		for c in range(2, SH.ncols):
 			thisEntry = SH.cell_value(r, c)

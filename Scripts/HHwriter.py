@@ -101,6 +101,26 @@ def writeInnp(sh, Qs, As, userResults):
 		r+=1	
 	return r
 
+def writeDecl(sh, Qs, As, userResults):
+	sh.write(0,2, "Statement")
+	sh.write(0,3, "Actual Value")
+	sh.write(1,1, "--")
+	sh.write(1,2, "--")
+	sh.write(1,3, "--")
+
+	r = 2
+	for (user, results) in userResults:
+		sh.write(r,0, user)
+		sh.write(r,1, results['score'])
+
+		userSelects = [str(x) for x in results['selections']]
+		sh.write(r,2, ' '.join(userSelects))
+		print(userSelects)
+		print(str(As))
+		sh.write(r,3, As[userSelects[0]][userSelects[3]])
+		r+=1	
+	return r
+
 
 
 def writeResults(num, xlSet, GT, Qs, As, userResults, ngList, noCommList):
@@ -117,6 +137,9 @@ def writeResults(num, xlSet, GT, Qs, As, userResults, ngList, noCommList):
 		r = writeOvun(sh, Qs, As, userResults)
 	elif GT is GameType.INNP:
 		r = writeInnp(sh, Qs, As, userResults)
+	elif GT is GameType.DECL:
+		r = writeDecl(sh, Qs, As, userResults)
+
 
 	c = (3+9) if GT is GameType.INNP else (2 + len(As))
 	for ng in ngList:

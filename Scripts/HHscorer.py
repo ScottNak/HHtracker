@@ -56,6 +56,7 @@ def scoreGame(gameType, entries, answers):
 			score = overUnder(userPicks, answers)
 		elif gameType is GameType.DECL:
 			score = declScore(userPicks, answers)
+			print(user + " => " + str(score))
 		else:
 			pass
 		entries[user]['score'] = score
