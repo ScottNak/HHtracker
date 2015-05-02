@@ -46,6 +46,18 @@ def getThisGamesWB(num):
 	ws = wb.sheet_by_index(0)
 	return (wb, ws)
 
+def getThisWeeksWB(num):
+
+	if num == 0:
+		return None
+	elif num < 10:
+		num = "0" + str(num)
+	else:
+		num = str(num)
+	wb = xlrd.open_workbook(HOME_DIR + 'Weeks/Week' + num + ".xlsx")
+	ws = wb.sheet_by_index(0)
+	return (wb, ws)
+
 def getThisGameTimeLimit(num):
 	schedWB = xlrd.open_workbook(os.path.abspath(HOME_DIR+'schedule.xlsx'))
 	schedSH = schedWB.sheet_by_index(0)
@@ -57,7 +69,6 @@ def getThisGameTimeLimit(num):
 
 def confirmTimeOK(limit):
 	needsNew = limit.time() == datetime.time(3,33)
-	
 	if needsNew:
 		print("[!] Schedule file has 3:33AM, update needed! ")
 	else:
