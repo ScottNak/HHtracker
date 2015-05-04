@@ -41,6 +41,20 @@ def declScore(userPicks, answers):
 	else:
 		return possScore if answers[playerPos][theFeat] == numericVal else 0
 
+def bljkScore(userPicks, answers):
+	picks = userPicks[0].split(", ")
+	score = 0
+	for p in picks:
+		score += answers[p]
+	if score is 17 or score is 18:
+		return 1
+	elif score is 19 or score is 20:
+		return 2
+	elif score is 21:
+		return 4
+	else:
+		return 0
+
 def scoreGame(gameType, entries, answers):
 	for user in entries:
 		score = 0
@@ -56,7 +70,8 @@ def scoreGame(gameType, entries, answers):
 			score = overUnder(userPicks, answers)
 		elif gameType is GameType.DECL:
 			score = declScore(userPicks, answers)
-			print(user + " => " + str(score))
+		elif gameType is GameType.BLJK:
+			score = bljkScore(userPicks, answers)
 		else:
 			pass
 		entries[user]['score'] = score

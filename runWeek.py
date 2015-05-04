@@ -1,7 +1,15 @@
-import Scripts.HHutil as HH
+import Scripts.HHweekUtil as HH
 
-gameNo = int(input("Week #: "))
-thisWeekSet = HH.getThisWeeksWB(gameNo-1)
-infoUpToNow = {} if thisWeekSet is not None else HH.extractWeek(thisWeekSet)
+weekNo = int(input("Week #: "))
+thisWeekInfo = HH.runThisWeeksInfo(weekNo)
+print("Players this week: " + str(len(thisWeekInfo.keys())))
 
-print(infoUpToNow)
+infoUpToNow = HH.getLastWeeksInfo(weekNo-1)
+# newP = 0
+# for i in infoUpToNow:
+# 	if i not in thisWeekInfo.keys():
+# 		newP += 1
+
+# print("New Players this week: " + str(newP))
+
+HH.writeOverallResults(weekNo, thisWeekInfo, infoUpToNow)

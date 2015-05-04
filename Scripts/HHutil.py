@@ -1,4 +1,3 @@
-import xlwt
 import xlrd
 import datetime
 import os
@@ -27,6 +26,7 @@ class GameType(Enum):
 	OVUN = 3
 	INNP = 4
 	DECL = 5
+	BLJK = 6
 
 def is_number(s):
     try:
@@ -46,17 +46,6 @@ def getThisGamesWB(num):
 	ws = wb.sheet_by_index(0)
 	return (wb, ws)
 
-def getThisWeeksWB(num):
-
-	if num == 0:
-		return None
-	elif num < 10:
-		num = "0" + str(num)
-	else:
-		num = str(num)
-	wb = xlrd.open_workbook(HOME_DIR + 'Weeks/Week' + num + ".xlsx")
-	ws = wb.sheet_by_index(0)
-	return (wb, ws)
 
 def getThisGameTimeLimit(num):
 	schedWB = xlrd.open_workbook(os.path.abspath(HOME_DIR+'schedule.xlsx'))
@@ -118,6 +107,8 @@ def getGameInfo(WB, SH):
 		gameType = GameType.INNP
 	elif returnMe == ["[ A ]", "[ B ]", "[ C ]", "[ D ]"]:
 		gameType = GameType.DECL
+	elif returnMe[0] == "The \"Cards\"":
+		gameType = GameType.BLJK
 	else:
 		print("Unable to detect game type. Pick from list")
 		for i in GameType:
@@ -141,6 +132,11 @@ def getAnswerList(GT, Qs, presiftInfo):
 				for feat in presiftInfo[key]:
 					val = int(input(key + ", " + feat + " = "))
 					ans[key][feat] = val
+		elif GT == GameType.BLJK:
+			ans = {}
+			for card in presiftInfo:
+				val = int(input(card + " = "))
+				ans[card] = val
 		else:
 			for qq in Qs:
 				reply = input("Answer to " + qq + ": ")
@@ -176,3 +172,12 @@ def presiftDECL(userPicks):
 		shortcut[selection[0]] = checks
 
 	return shortcut
+
+def presiftBLJK(userPicks):
+	shortcut = []
+	for user in userPicks:
+		selection = userPicks[user]['selections'][0].split(", ")
+		for s in selection:
+			if s not in shortcut:
+				shortcut.append(s)
+	return sorted(shortcut)

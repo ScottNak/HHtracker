@@ -18,6 +18,9 @@ lateEntries = [k for (k, v) in verifiedEntries.items() if (v['time'] > thisGameL
 presiftInfo = None
 if gameType is HH.GameType.DECL:
 	presiftInfo = HH.presiftDECL(goodEntries)
+elif gameType is HH.GameType.BLJK:
+	presiftInfo = HH.presiftBLJK(goodEntries)
+	print(presiftInfo)
 print(presiftInfo)
 answers = HH.getAnswerList(gameType, questions, presiftInfo)
 

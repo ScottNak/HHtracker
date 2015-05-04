@@ -121,6 +121,27 @@ def writeDecl(sh, Qs, As, userResults):
 		r+=1	
 	return r
 
+def writeBljk(sh, Qs, As, userResults):
+	sh.write(0,2, "Breakdown")
+	sh.write(0,3, "Picks")
+	sh.write(1,1, "--")
+	sh.write(1,2, "--")
+	sh.write(1,3, "--")
+
+	r = 2
+	for (user, results) in userResults:
+		sh.write(r, 0, user)
+		sh.write(r, 1, results['score'])
+		summ = 0
+		breakdown = ""
+		for k in results['selections'][0].split(", "):
+			if breakdown is not "":
+				breakdown += "+"
+			summ += As[k]
+			breakdown += str(As[k])
+		sh.write(r, 2, str(summ) + " = " + breakdown)
+		sh.write(r, 3, results['selections'][0])
+		r+=1
 
 
 def writeResults(num, xlSet, GT, Qs, As, userResults, ngList, noCommList):
@@ -139,6 +160,8 @@ def writeResults(num, xlSet, GT, Qs, As, userResults, ngList, noCommList):
 		r = writeInnp(sh, Qs, As, userResults)
 	elif GT is GameType.DECL:
 		r = writeDecl(sh, Qs, As, userResults)
+	elif GT is GameType.BLJK:
+		r = writeBljk(sh, Qs, As, userResults)
 
 
 	c = (3+9) if GT is GameType.INNP else (2 + len(As))
