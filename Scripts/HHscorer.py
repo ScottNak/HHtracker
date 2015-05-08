@@ -53,7 +53,7 @@ def bljkScore(userPicks, answers):
 	elif score is 21:
 		return 4
 	else:
-		return 0
+		return 0 + score/100
 
 def scoreGame(gameType, entries, answers):
 	for user in entries:

@@ -131,7 +131,7 @@ def writeBljk(sh, Qs, As, userResults):
 	r = 2
 	for (user, results) in userResults:
 		sh.write(r, 0, user)
-		sh.write(r, 1, results['score'])
+		sh.write(r, 1, int(results['score']))
 		summ = 0
 		breakdown = ""
 		for k in results['selections'][0].split(", "):
