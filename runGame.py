@@ -26,7 +26,8 @@ answers = HH.getAnswerList(gameType, questions, presiftInfo)
 
 markedEntries = HHSC.scoreGame(gameType, goodEntries, answers)
 sortedEntries = []
-for user in sorted(markedEntries.items(), key=lambda k_v: k_v[1]['score'], reverse=True):
+print(sorted(markedEntries.items(), key=lambda x: x[1]['score'], reverse=True))
+for user in sorted(sorted(markedEntries.items(), key=lambda x: x[0]), key=lambda y: y[1]['score'], reverse=True):
 	sortedEntries.append(user)
 
 print("Game Type: " + str(gameType.name))

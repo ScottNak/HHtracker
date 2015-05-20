@@ -61,8 +61,8 @@ def runThisWeeksInfo(weekNo):
 			userInfo = returnMe.get(user.lower(), {'name': user, 'scores': ['-']*(end-start)})
 			userInfo['scores'][num-start] = score
 			returnMe[user.lower()] = userInfo
-	writeThisWeek(returnMe, whichGame, weekNo, start, end)
-	return returnMe
+	leaderInfo = writeThisWeek(returnMe, whichGame, weekNo, start, end)
+	return (returnMe, leaderInfo)
 
 def getUserScoreInfo(ptArray):
 	mySum = 0
@@ -94,11 +94,19 @@ def writeThisWeek(weekInfo, whichGame, weekNo, start, end):
 	for user in sorted(weekInfo.items(), key=lambda k_v: getSortValue(k_v[1]['scores']), reverse=True):
 		sortedEntries.append(user[1])
 
+	hiScore = None
+	hiScoreList = []
 	for userInfo in sortedEntries:
 		sh.write(r,0, userInfo['name'])
 		(userScore, userPlay) = getUserScoreInfo(userInfo['scores'])
 		sh.write(r,1, userScore)
 		sh.write(r,2, userPlay)
+
+		if hiScore is None:
+			hiScore = userScore
+
+		if userScore is hiScore:
+			hiScoreList.append(userInfo['name'])
 
 		for i in range(start, end):
 			sh.write(r, 3+(i-start), userInfo['scores'][i-start])
@@ -106,7 +114,9 @@ def writeThisWeek(weekInfo, whichGame, weekNo, start, end):
 
 	weekNo = "0" + str(weekNo) if weekNo < 10 else str(weekNo)
 	wb.save("./Weeks/Week" + weekNo + ".xls")
-	os.startfile(HOME_DIR + "/Weeks/Week" + weekNo + ".xls")		
+	os.startfile(HOME_DIR + "/Weeks/Week" + weekNo + ".xls")	
+
+	return (hiScoreList, hiScore)
 
 def writeOverallResults(weekNo, thisWkInfo, pastInfo):
 	(wb, sh) = makeWBWithSheet()
@@ -139,10 +149,19 @@ def writeOverallResults(weekNo, thisWkInfo, pastInfo):
 		sortedEntries.append(user[1])	
 
 	r = 1
+	hiScore = None
+	hiScoreList = []
 	for user in sortedEntries:
 		sh.write(r, 0, user['name'])
 		sh.write(r, 1, user['score'])
 		sh.write(r, 2, user['play'])
+
+		if hiScore is None:
+			hiScore = user['score']
+
+		if user['score'] is hiScore:
+			hiScoreList.append(user['name'])
+
 		for c in range(1, weekNo+1):
 			sh.write(r, 3+c-1, user['history'][c-1])
 		r += 1
@@ -150,3 +169,18 @@ def writeOverallResults(weekNo, thisWkInfo, pastInfo):
 	weekNo = "0" + str(weekNo) if weekNo < 10 else str(weekNo)
 	wb.save("./Overall/Overall" + weekNo + ".xls")
 	os.startfile(HOME_DIR + "/Overall/Overall" + weekNo + ".xls")	
+
+	return (hiScoreList, hiScore)
+
+def trackLeaders(gNo, weekL, overallL):
+	print(">>>>>>>>>>>>>>")
+	print("Weekly  Leader: " + ', '.join(weekL[0]))
+	print("Weekly  Score : " + str(weekL[1]))
+	print(">>>>>>>>>>>>>>")
+	print("Overall Leader: " + ', '.join(overallL[0]))
+	print("Overall Score : " + str(overallL[1]))
+	print(">>>>>>>>>>>>>>")
+
+	f = open(HOME_DIR+"/runningLeaders.txt", 'a')
+	f.write("[{:0>2d}] {} || {}\n".format(gNo, ', '.join(weekL[0]), ', '.join(overallL[0])))
+	f.close()

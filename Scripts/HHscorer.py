@@ -43,17 +43,20 @@ def declScore(userPicks, answers):
 
 def bljkScore(userPicks, answers):
 	picks = userPicks[0].split(", ")
-	score = 0
+	score = answers['[*] LAA H']
+	print(score)
 	for p in picks:
 		score += answers[p]
 	if score is 17 or score is 18:
-		return 1
+		ptsGet = 1
 	elif score is 19 or score is 20:
-		return 2
+		ptsGet = 2
 	elif score is 21:
-		return 4
+		ptsGet = 4
 	else:
-		return 0 + score/100
+		ptsGet = 0
+
+	return ptsGet + score/100
 
 def scoreGame(gameType, entries, answers):
 	for user in entries:

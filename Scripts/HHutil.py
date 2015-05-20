@@ -85,6 +85,7 @@ def getCommentUsers(num):
 		print(" >>>> Requesting >>>> ")
 		resp = urllib.request.urlopen(url2)
 		info = resp.read().decode("utf-8")
+		print(json.loads(info)['data']['commentsByCommenter'])
 		users = json.loads(info)['data']['commentsByCommenter'].keys()
 		print(" >>>> DONE >>>> ")
 		return users
@@ -174,7 +175,7 @@ def presiftDECL(userPicks):
 	return shortcut
 
 def presiftBLJK(userPicks):
-	shortcut = []
+	shortcut = ['[*] LAA H']
 	for user in userPicks:
 		selection = userPicks[user]['selections'][0].split(", ")
 		for s in selection:
