@@ -73,6 +73,15 @@ def confirmTimeOK(limit):
 
 	return limit
 
+def grabCommentHelper(url):
+	print(" >>>> Requesting >>>> " + url)
+	resp = urllib.request.urlopen(url)
+	info = resp.read().decode("utf-8")
+	print(json.loads(info)['data']['commentsByCommenter'])
+	users = json.loads(info)['data']['commentsByCommenter'].keys()
+	print(" >>>> DONE >>>> ")
+	return users
+
 def getCommentUsers(num):
 	try:
 		resp = urllib.request.urlopen(HH_LINK)
@@ -82,15 +91,11 @@ def getCommentUsers(num):
 			if(int(gameNo) == num):
 				url2 = HH_GET_LINK + gameURL
 				break
-		print(" >>>> Requesting >>>> ")
-		resp = urllib.request.urlopen(url2)
-		info = resp.read().decode("utf-8")
-		print(json.loads(info)['data']['commentsByCommenter'])
-		users = json.loads(info)['data']['commentsByCommenter'].keys()
-		print(" >>>> DONE >>>> ")
-		return users
+		return grabCommentHelper(url2)
 	except:
-		print( "Uh oh... " + sys.exc_info())
+		webbrowser.get(CHROME_DIR).open(HH_LINK, new=1)
+		urlNew = HH_GET_LINK + input("Unable to find a proper link. Try manually: ")
+		return grabCommentHelper(urlNew)		
 
 def getGameInfo(WB, SH):
 	returnMe = []
