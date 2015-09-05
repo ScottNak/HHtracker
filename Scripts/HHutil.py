@@ -27,6 +27,7 @@ class GameType(Enum):
 	INNP = 4
 	DECL = 5
 	BLJK = 6
+	BINGO= 7
 
 def is_number(s):
     try:
@@ -62,14 +63,14 @@ def confirmTimeOK(limit):
 		print("[!] Schedule file has 3:33AM, update needed! ")
 	else:
 		resp = input("This time ok? <" + str(limit) + ">: " )
-		needsNew = not (resp == "" or resp != "y" or resp != "Y")
+		needsNew = not (resp == "" or resp == "y" or resp == "Y")
 
 	while needsNew:
 		resp = input("Enter time: ")
 		resp = [int(x) for x in resp.split(":")]
 		limit = limit.replace(hour=resp[0], minute=resp[1])
 		resp = input("New Cutoff is <" + str(limit) + "> OK? ")
-		needsNew = not (resp == "" or resp != "y" or resp != "Y")
+		needsNew = not (resp == "" or resp == "y" or resp == "Y")
 
 	return limit
 
@@ -115,6 +116,8 @@ def getGameInfo(WB, SH):
 		gameType = GameType.DECL
 	elif returnMe[0] == "The \"Cards\"":
 		gameType = GameType.BLJK
+	elif SH.cell_value(1, 2).startswith("Gets a") or SH.cell_value(1,2) == "Does Not":
+		gameType = GameType.BINGO
 	else:
 		print("Unable to detect game type. Pick from list")
 		for i in GameType:
@@ -143,6 +146,23 @@ def getAnswerList(GT, Qs, presiftInfo):
 			for card in presiftInfo:
 				val = int(input(card + " = "))
 				ans[card] = val
+		elif GT == GameType.BINGO:		
+			qq = [x[-3:].replace("]","").strip() for x in Qs]
+			print("=====QQ====")
+			print(qq)
+			print("=====QQ====")
+
+			ans = input("Starting Players with " + presiftInfo + ": ")
+			ans = ans.split(" ")
+			aa = []
+
+			for q in qq:
+				aa.append(q in ans)
+
+			print(aa)
+			print ("=^^ A ^^=")
+			return aa
+
 		else:
 			for qq in Qs:
 				reply = input("Answer to " + qq + ": ")
@@ -187,3 +207,10 @@ def presiftBLJK(userPicks):
 			if s not in shortcut:
 				shortcut.append(s)
 	return sorted(shortcut)
+
+def presiftBINGO(userPicks):
+	for user in userPicks:
+		for s in userPicks[user]['selections']:
+			if s.startswith("Gets a "):
+				return s[7]
+	return input("Can't find the feat... what is it? ")

@@ -21,6 +21,8 @@ if gameType is HH.GameType.DECL:
 elif gameType is HH.GameType.BLJK:
 	presiftInfo = HH.presiftBLJK(goodEntries)
 	print(presiftInfo)
+elif gameType is HH.GameType.BINGO:
+	presiftInfo = HH.presiftBINGO(goodEntries)
 print(presiftInfo)
 answers = HH.getAnswerList(gameType, questions, presiftInfo)
 

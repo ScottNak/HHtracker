@@ -58,6 +58,40 @@ def bljkScore(userPicks, answers):
 
 	return ptsGet + score/100
 
+def bingoScore(userPicks, answers):
+	print (answers)
+	print (userPicks)
+	blots = []
+	for i in range(0, 9):
+		blots.append(userPicks[i].startswith("Gets a") == answers[i])
+		print(userPicks[i])
+
+	print(str(blots[0]) + " " + str(blots[1]) + " " + str(blots[2]))
+	print(str(blots[3]) + " " + str(blots[4]) + " " + str(blots[5]))
+	print(str(blots[6]) + " " + str(blots[7]) + " " + str(blots[8]))
+
+	score = 0
+	if (blots[0] and blots[1] and blots[2]):
+		score += 1
+	if (blots[3] and blots[4] and blots[5]):
+		score += 1
+	if (blots[6] and blots[7] and blots[8]):
+		score += 1
+	if (blots[0] and blots[3] and blots[6]):
+		score += 1
+	if (blots[1] and blots[4] and blots[7]):
+		score += 1
+	if (blots[2] and blots[5] and blots[8]):
+		score += 1
+	if (blots[0] and blots[4] and blots[8]):
+		score += 1
+	if (blots[2] and blots[4] and blots[6]):
+		score += 1
+
+	print("Score: " + str(score))
+	return score
+
+
 def scoreGame(gameType, entries, answers):
 	for user in entries:
 		score = 0
@@ -75,6 +109,8 @@ def scoreGame(gameType, entries, answers):
 			score = declScore(userPicks, answers)
 		elif gameType is GameType.BLJK:
 			score = bljkScore(userPicks, answers)
+		elif gameType is GameType.BINGO:
+			score = bingoScore(userPicks, answers)
 		else:
 			pass
 		entries[user]['score'] = score

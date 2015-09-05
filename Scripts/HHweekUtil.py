@@ -47,6 +47,7 @@ def runThisWeeksInfo(weekNo):
 			x = "0" + str(num)
 		else:
 			x = str(num)
+		print(num)
 		wb = xlrd.open_workbook(HOME_DIR + 'Results/Game' + x + "out.xls")
 		sh = wb.sheet_by_index(0)
 		whichGame[num] = sh.cell_value(0,0)		

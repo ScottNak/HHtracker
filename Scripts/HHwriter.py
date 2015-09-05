@@ -142,6 +142,31 @@ def writeBljk(sh, Qs, As, userResults):
 		r+=1
 	return r
 
+def writeBingo(sh, Qs, As, userResults):
+	print("---- write ---- ")
+	print(Qs)
+	print(As)
+	print(userResults)
+	for i in range(0, 9):
+		sh.write(0,i+2, Qs[i])
+		sh.write(1,i+2, "O" if As[i] else "X")
+	sh.write(1,1, "--")
+
+	r = 2
+	for (user, results) in userResults:
+		sh.write(r,0, user)
+		sh.write(r,1, results['score'])
+		c = 2
+		for pick in results['selections']:			
+			wo = pick.startswith("Gets a")
+			pm = "O" if wo else "X"
+			if wo == As[c-2]:
+				sh.write(r,c, pm, CORRECT_BGND)
+			else:
+				sh.write(r,c, pm)
+			c+=1
+		r+=1	
+	return r
 
 def writeResults(num, xlSet, GT, Qs, As, userResults, ngList, noCommList):
 	(wb, sh) = xlSet
@@ -161,6 +186,8 @@ def writeResults(num, xlSet, GT, Qs, As, userResults, ngList, noCommList):
 		r = writeDecl(sh, Qs, As, userResults)
 	elif GT is GameType.BLJK:
 		r = writeBljk(sh, Qs, As, userResults)
+	elif GT is GameType.BINGO:
+		r = writeBingo(sh, Qs, As, userResults)
 
 
 	c = (3+9) if GT is GameType.INNP else (2 + len(As))
